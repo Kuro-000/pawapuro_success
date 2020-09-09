@@ -26,6 +26,7 @@ First date : 2017/01/10
 
 #include "./conio.h"
 #include <algorithm>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -55,6 +56,7 @@ using std::cout;
 using std::endl;
 using std::fixed;
 using std::istream;
+using std::ofstream;
 using std::right;
 using std::setprecision;
 using std::setw;
@@ -410,11 +412,14 @@ GAME_START:
         cout << "[" << Name << "]:"
              << "「とにかく明日からの練習頑張るぞ！」▼ ";
     }
-    //------------[31日ループ]-------------------------------------------------------------------
+
+    //------------[31日ループ_投手]-------------------------------------------------------------------
     if(Position == 1) {
     PITCHER:
         //運動型、非運動型
-        sense = rand() % 2 + 1;
+        // デバッグ用に強制的に運動型へ
+        // sense = rand() % 2 + 1;
+        sense = 1;
         //リセットの際の変化球習得初期化
         Slider = 0;
         Curve = 0;
@@ -515,7 +520,6 @@ GAME_START:
         }
 
         while(1) {
-
             //各投手能力値の長さ判定
             if((Control >= 0) && (Control < 10))
                 length_Control = 1;
@@ -548,7 +552,8 @@ GAME_START:
                 system("clear");
             }
 
-            condition = rand() % 5 + 1; //調子決定行
+            // 調子決定行
+            condition = rand() % 5 + 1;
             if(condition == 1)
                 condition_point = -3;
             if(condition == 2)
@@ -671,13 +676,21 @@ GAME_START:
                     Daijyoubu();
                 Daijyoubu_count++; //ダイジョーブ博士出現カウンター
             }
-            if(days == 1)
+            if(days == 1) {
+                // 31日ループ終了と同時に結果をcsv出力
+                cout << "終わるのだ" << endl;
+                ofstream ofs("result.csv", std::ios::app);
+                ofs << Position << "," << muscle << "," << agile << ","
+                    << technique << "," << evolving << "," << spirit << endl;
+                cout << Position << "," << muscle << "," << agile << ","
+                     << technique << "," << evolving << "," << spirit << endl;
                 break;
+            }
             sub_days++;
         }
     }
 
-    //------------[31日ループ]-------------------------------------------------------------------
+    //------------[31日ループ_野手]-------------------------------------------------------------------
     if((Position >= 2) && (Position <= 9)) {
     BATTER:
         //運動型、非運動型
@@ -856,6 +869,7 @@ GAME_START:
         }
     }
     cout << "\x1b[39m";
+    return (0);
 }
 
 //======[関数群]=======================================================================================-
