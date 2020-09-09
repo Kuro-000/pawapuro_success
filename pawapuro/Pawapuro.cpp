@@ -50,6 +50,8 @@ First date : 2017/01/10
 #define GENIUS_DENOMINATOR 25 //天才型出現判定の分母
 #define DAIJYOUBU_1 1 //ダイジョーブ博士出現率(rand()%10<DAIJYOUBU_1)
 #define DAIJYOUBU_2 1 //ダイジョーブ博士成功率(rand()%10<DAIJYOUBU_2)
+// インターリーブ学習の割合、MAXは1.5
+#define INTERLEAVE_PROPORTION 0.05
 
 using std::cin;
 using std::cout;
@@ -239,6 +241,14 @@ double genius_point; //天才型時必要経験値減係数変数
 double ball_per = 1, control_per = 1, stamina_per = 1, evolving_per = 1,
        meet_per = 1, power_per = 1, run_per = 1, sholder_per = 1,
        protect_per = 1, catching_per = 1;
+
+// インターリーブ学習のために過去の練習をカウントする
+// インターリーブ学習の割合、最大で1.5ほどを想定している
+double interleave_proportion = 0;
+// 投手練習
+int ball_interleave = 0, control_interleave = 0, stamina_interleave = 0,
+    evolving_interleave = 0;
+
 int main() {
     srand((unsigned)time(NULL));
 GAME_START:
@@ -1006,170 +1016,247 @@ PERSONALITY:
 }
 
 void Pitcher_practice_decide(void) {
-
+    // デバッグのいインターリーブ学習をを表示
+    cout << "interleave_% is " << interleave_proportion << endl;
     //-----[球速練習関連]------------------------------------------------------
     if(practice_number == 1) {
         if(Ball_level == 1) {
             muscle_point = 10 + sense_point;
+            muscle_point += muscle_point * interleave_proportion;
             muscle += muscle_point;
             technique_point = 4 + sense_point;
+            technique_point += technique_point * interleave_proportion;
             technique += technique_point;
             spirit_point = 2 + sense_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Ball_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "投げ込みを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "筋力ポイント"
                      << "\x1b[34m"
                      << "が" << muscle_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Ball_level == 2) {
             muscle_point = 13 + sense_point + condition_point;
+            muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
             technique_point = 8 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 4 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Ball_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "200球投げ込みを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "筋力ポイント"
                      << "\x1b[34m"
                      << "が" << muscle_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Ball_level == 3) {
             muscle_point = 17 + sense_point + condition_point;
+            muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
             technique_point = 12 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 8 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "マッスラー投げ込みを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "筋力ポイント"
                      << "\x1b[34m"
                      << "が" << muscle_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
+        }
+        control_interleave--;
+        stamina_interleave--;
+        evolving_interleave--;
+        if(control_interleave < 0) {
+            control_interleave = 0;
+        }
+        if(stamina_interleave < 0) {
+            stamina_interleave = 0;
+        }
+        if(evolving_interleave < 0) {
+            evolving_interleave = 0;
+        }
+        if(ball_interleave == 4) {
+            interleave_proportion = (0 + control_interleave +
+                                     stamina_interleave + evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+        } else {
+            interleave_proportion = (ball_interleave + control_interleave +
+                                     stamina_interleave + evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+            ball_interleave = 4;
         }
     }
     if(Ball_level_counter == 3) {
         Ball_level_counter = 0;
-        if(Ball_level == 1)
-            Ball_level = 2;
-        else if(Ball_level == 2)
+        Ball_level++;
+        if(Ball_level > 3) {
             Ball_level = 3;
-        else
-            Ball_level = 3;
+        }
     }
 
     //-----[コントロール練習関連]------------------------------------------------------
     if(practice_number == 2) {
         if(Control_level == 1) {
             technique_point = 10 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 6 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Control_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "的当てを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Control_level == 2) {
             technique_point = 13 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 10 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Control_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "コース投げ込みを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Control_level == 3) {
             technique_point = 17 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 12 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "コース実践行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
+        }
+        ball_interleave--;
+        stamina_interleave--;
+        evolving_interleave--;
+        if(ball_interleave < 0) {
+            ball_interleave = 0;
+        }
+        if(stamina_interleave < 0) {
+            stamina_interleave = 0;
+        }
+        if(evolving_interleave < 0) {
+            evolving_interleave = 0;
+        }
+        if(control_interleave == 4) {
+            interleave_proportion = (ball_interleave + 0 + stamina_interleave +
+                                     evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+        } else {
+            interleave_proportion = (ball_interleave + control_interleave +
+                                     stamina_interleave + evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+            control_interleave = 4;
         }
     }
     if(Control_level_counter == 3) {
         Control_level_counter = 0;
-        if(Control_level == 1)
-            Control_level = 2;
-        else if(Control_level == 2)
+        Control_level++;
+        if(Control_level > 3) {
             Control_level = 3;
-        else
-            Control_level = 3;
+        }
     }
 
     //-----[スタミナ練習関連]------------------------------------------------------
@@ -1177,46 +1264,59 @@ void Pitcher_practice_decide(void) {
     if(practice_number == 3) {
         if(Stamina_level == 1) {
             muscle_point = 8 + sense_point + condition_point;
+            muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
             spirit_point = 3 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Stamina_add += 1 + rand() % 6;
+            Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Stamina_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "長距離走を行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "筋力ポイント"
                      << "\x1b[34m"
                      << "が" << muscle_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "スタミナ"
                      << "\x1b[34m"
                      << "が" << Stamina_add << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Stamina_level == 2) {
             muscle_point = 11 + sense_point + condition_point;
+            muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
             spirit_point = 5 + sense_point + condition_point;
+            spirit_point +=
+                (int)(interleave_proportion * interleave_proportion);
             spirit += spirit_point;
             Stamina_add += 1 + rand() % 6;
+            Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Stamina_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "マラソンを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "筋力ポイント"
                      << "\x1b[34m"
                      << "が" << muscle_point << "上がった。▼ ";
+            }
             if(getchar() == '\n')
                 cout << "\x1b[33m"
                      << "精神ポイント"
@@ -1231,132 +1331,178 @@ void Pitcher_practice_decide(void) {
         }
         if(Stamina_level == 3) {
             muscle_point = 14 + sense_point + condition_point;
+            muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
             spirit_point = 8 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Stamina_add += 1 + rand() % 6;
+            Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "タイヤ引きを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "筋力ポイント"
                      << "\x1b[34m"
                      << "が" << muscle_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "スタミナ"
                      << "\x1b[34m"
                      << "が" << Stamina_add << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
+        }
+        ball_interleave--;
+        control_interleave--;
+        evolving_interleave--;
+        if(ball_interleave < 0) {
+            ball_interleave = 0;
+        }
+        if(control_interleave < 0) {
+            control_interleave = 0;
+        }
+        if(evolving_interleave < 0) {
+            evolving_interleave = 0;
+        }
+        if(stamina_interleave == 4) {
+            interleave_proportion = (ball_interleave + control_interleave + 0 +
+                                     evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+        } else {
+            interleave_proportion = (ball_interleave + control_interleave +
+                                     stamina_interleave + evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+            stamina_interleave = 4;
         }
     }
     if(Stamina_level_counter == 3) {
         Stamina_level_counter = 0;
-        if(Stamina_level == 1)
-            Stamina_level = 2;
-        else if(Stamina_level == 2)
+        Stamina_level++;
+        if(Stamina_level > 3) {
             Stamina_level = 3;
-        else
-            Stamina_level = 3;
+        }
     }
 
     //-----[変化球練習関連]------------------------------------------------------
     if(practice_number == 4) {
         if(Evolving_level == 1) {
             evolving_point = 3 + sense_point + condition_point;
+            evolving_point += (int)(evolving_point * interleave_proportion);
             evolving += evolving_point;
             technique_point = 10 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 3 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Evolving_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "変化球本音読を行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "変化球ポイント"
                      << "\x1b[34m"
                      << "が" << evolving_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Evolving_level == 2) {
             evolving_point = 6 + sense_point + condition_point;
+            evolving_point += (int)(evolving_point * interleave_proportion);
             evolving += evolving_point;
             technique_point = 13 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 6 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Evolving_level_counter++;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "変化球投げ込みを行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "変化球ポイント"
                      << "\x1b[34m"
                      << "が" << evolving_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
         if(Evolving_level == 3) {
             evolving_point = 10 + sense_point + condition_point;
+            evolving_point += (int)(evolving_point * interleave_proportion);
             evolving += evolving_point;
             technique_point = 17 + sense_point + condition_point;
+            technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
             spirit_point = 10 + sense_point + condition_point;
+            spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            if(getchar() == '\n')
+            if(getchar() == '\n') {
                 cout << "変化球実践を行なった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "変化球ポイント"
                      << "\x1b[34m"
                      << "が" << evolving_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "技術ポイント"
                      << "\x1b[34m"
                      << "が" << technique_point << "上がった。▼ ";
-            if(getchar() == '\n')
+            }
+            if(getchar() == '\n') {
                 cout << "\x1b[33m"
                      << "精神ポイント"
                      << "\x1b[34m"
                      << "が" << spirit_point << "上がった。▼ ";
+            }
             cout << "\x1b[39m"; //デフォ
         }
     }
     if(Evolving_level_counter == 3) {
         Evolving_level_counter = 0;
-        if(Evolving_level == 1)
-            Evolving_level = 2;
-        else if(Evolving_level == 2)
+        Evolving_level++;
+        if(Evolving_level > 3) {
             Evolving_level = 3;
-        else
-            Evolving_level = 3;
+        }
     }
 }
 
