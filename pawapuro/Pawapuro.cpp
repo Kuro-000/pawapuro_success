@@ -35,7 +35,7 @@ First date : 2017/01/10
 #include <vector>
 // #include "character.cc"
 
-#define DAYS 31 /*練習日数*/
+#define DAYS 31 // 練習日数
 // Lv.1時の練習メニューで得られるポイント
 #define BALL_POINT 5
 #define CONTROL_POINT 5
@@ -47,11 +47,10 @@ First date : 2017/01/10
 #define SHOLDER_POINT 5
 #define PROTECT_POINT 5
 #define CATCHING_POINT 5
-#define GENIUS_DENOMINATOR 25 //天才型出現判定の分母
-#define DAIJYOUBU_1 1 //ダイジョーブ博士出現率(rand()%10<DAIJYOUBU_1)
-#define DAIJYOUBU_2 1 //ダイジョーブ博士成功率(rand()%10<DAIJYOUBU_2)
-// インターリーブ学習の割合、MAXは1.5
-#define INTERLEAVE_PROPORTION 0.05
+#define GENIUS_DENOMINATOR 25 // 天才型出現判定の分母
+#define DAIJYOUBU_1 1 // ダイジョーブ博士出現率(rand()%10<DAIJYOUBU_1)
+#define DAIJYOUBU_2 1 // ダイジョーブ博士成功率(rand()%10<DAIJYOUBU_2)
+#define INTERLEAVE_PROPORTION 0.05 // インターリーブ学習の割合、MAXは1.5
 
 using std::cin;
 using std::cout;
@@ -1016,7 +1015,7 @@ PERSONALITY:
 }
 
 void Pitcher_practice_decide(void) {
-    // デバッグのいインターリーブ学習をを表示
+    // デバッグのインターリーブ学習をを表示
     cout << "interleave_% is " << interleave_proportion << endl;
     //-----[球速練習関連]------------------------------------------------------
     if(practice_number == 1) {
@@ -1138,10 +1137,10 @@ void Pitcher_practice_decide(void) {
                                      stamina_interleave + evolving_interleave) *
                                     INTERLEAVE_PROPORTION;
         } else {
+            ball_interleave = 4;
             interleave_proportion = (ball_interleave + control_interleave +
                                      stamina_interleave + evolving_interleave) *
                                     INTERLEAVE_PROPORTION;
-            ball_interleave = 4;
         }
     }
     if(Ball_level_counter == 3) {
@@ -1245,10 +1244,10 @@ void Pitcher_practice_decide(void) {
                                      evolving_interleave) *
                                     INTERLEAVE_PROPORTION;
         } else {
+            control_interleave = 4;
             interleave_proportion = (ball_interleave + control_interleave +
                                      stamina_interleave + evolving_interleave) *
                                     INTERLEAVE_PROPORTION;
-            control_interleave = 4;
         }
     }
     if(Control_level_counter == 3) {
@@ -1379,10 +1378,10 @@ void Pitcher_practice_decide(void) {
                                      evolving_interleave) *
                                     INTERLEAVE_PROPORTION;
         } else {
+            stamina_interleave = 4;
             interleave_proportion = (ball_interleave + control_interleave +
                                      stamina_interleave + evolving_interleave) *
                                     INTERLEAVE_PROPORTION;
-            stamina_interleave = 4;
         }
     }
     if(Stamina_level_counter == 3) {
@@ -1496,6 +1495,28 @@ void Pitcher_practice_decide(void) {
             }
             cout << "\x1b[39m"; //デフォ
         }
+        ball_interleave--;
+        control_interleave--;
+        stamina_interleave--;
+        if(ball_interleave < 0) {
+            ball_interleave = 0;
+        }
+        if(control_interleave < 0) {
+            control_interleave = 0;
+        }
+        if(stamina_interleave < 0) {
+            stamina_interleave = 0;
+        }
+        if(evolving_interleave == 4) {
+            interleave_proportion = (ball_interleave + control_interleave +
+                                     stamina_interleave + 0) *
+                                    INTERLEAVE_PROPORTION;
+        } else {
+            evolving_interleave = 4;
+            interleave_proportion = (ball_interleave + control_interleave +
+                                     stamina_interleave + evolving_interleave) *
+                                    INTERLEAVE_PROPORTION;
+        }
     }
     if(Evolving_level_counter == 3) {
         Evolving_level_counter = 0;
@@ -1504,6 +1525,11 @@ void Pitcher_practice_decide(void) {
             Evolving_level = 3;
         }
     }
+    cout << "ball_interleave is " << ball_interleave << endl;
+    cout << "control_interleave is " << control_interleave << endl;
+    cout << "stamina_interleave is " << stamina_interleave << endl;
+    cout << "evolving_interleave is " << evolving_interleave << endl;
+    cout << "\x1b[39m"; //デフォ
 }
 
 void Batter_practice_decide(void) {
