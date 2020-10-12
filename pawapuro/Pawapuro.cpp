@@ -52,9 +52,30 @@ First date : 2017/01/10
 // クソ面倒ですが各練習を定義
 // 使う分だけ上から追加していきます
 // 絶対後からクラス対応する
-#define BALL1_MUSCLE = 10
-#define BALL1_TECHNIQUE = 4
-#define BALL1_SPIRIT = 2
+
+// ball練習
+// muscle, technique, spirit
+int BALL1[3] = {10, 4, 2};
+int BALL2[3] = {13, 8, 4};
+int BALL3[3] = {17, 12, 8};
+
+// contro練習
+// technique, spirit
+int CONTROL1[2] = {10, 6};
+int CONTROL2[2] = {13, 10};
+int CONTROL3[2] = {17, 12};
+
+// stamina練習
+// muscle, spirit, stamina, stamina
+int STAMINA1[4] = {8, 3, 1, 6};
+int STAMINA2[4] = {11, 5, 1, 6};
+int STAMINA3[4] = {14, 8, 1, 6};
+
+// evolvinれ練習
+// evolving, technique, spirit
+int EVOLVING1[3] = {3, 10, 3};
+int EVOLVING2[3] = {6, 13, 6};
+int EVOLVING3[3] = {10, 17, 10};
 
 // #define GENIUS_DENOMINATOR 25 // 天才型出現判定の分母
 #define GENIUS_DENOMINATOR 9999999999 // 天才型出現判定の分母
@@ -65,7 +86,7 @@ First date : 2017/01/10
 #define HP 100 // 体力をとりあえず100と設定
 #define LEVEL1_PRACTICE_HP 15
 #define LEVEL2_PRACTICE_HP 20
-#define LEVEL3_PRACTICE_HP 25
+#define LEVEL3_PRACTICE_HP 30
 
 using std::cin;
 using std::cout;
@@ -1060,13 +1081,13 @@ void Pitcher_practice_decide(void) {
     //-----[球速練習関連]------------------------------------------------------
     if(practice_number == 1) {
         if(Ball_level == 1) {
-            muscle_point = 10 + sense_point;
+            muscle_point = BALL1[0] + sense_point;
             muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
-            technique_point = 4 + sense_point;
+            technique_point = BALL1[1] + sense_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 2 + sense_point;
+            spirit_point = BALL1[2] + sense_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Ball_level_counter++;
@@ -1102,13 +1123,13 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Ball_level == 2) {
-            muscle_point = 13 + sense_point + condition_point;
+            muscle_point = BALL2[0] + sense_point + condition_point;
             muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
-            technique_point = 8 + sense_point + condition_point;
+            technique_point = BALL2[1] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 4 + sense_point + condition_point;
+            spirit_point = BALL2[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Ball_level_counter++;
@@ -1144,13 +1165,13 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Ball_level == 3) {
-            muscle_point = 17 + sense_point + condition_point;
+            muscle_point = BALL3[0] + sense_point + condition_point;
             muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
-            technique_point = 12 + sense_point + condition_point;
+            technique_point = BALL3[1] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 8 + sense_point + condition_point;
+            spirit_point = BALL3[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Hp -= LEVEL3_PRACTICE_HP - condition_point;
@@ -1218,10 +1239,10 @@ void Pitcher_practice_decide(void) {
     //-----[コントロール練習関連]------------------------------------------------------
     if(practice_number == 2) {
         if(Control_level == 1) {
-            technique_point = 10 + sense_point + condition_point;
+            technique_point = CONTROL1[0] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 6 + sense_point + condition_point;
+            spirit_point = CONTROL1[1] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Control_level_counter++;
@@ -1251,10 +1272,10 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Control_level == 2) {
-            technique_point = 13 + sense_point + condition_point;
+            technique_point = CONTROL2[0] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 10 + sense_point + condition_point;
+            spirit_point = CONTROL2[1] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Control_level_counter++;
@@ -1284,10 +1305,10 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Control_level == 3) {
-            technique_point = 17 + sense_point + condition_point;
+            technique_point = CONTROL3[0] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 12 + sense_point + condition_point;
+            spirit_point = CONTROL3[1] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Hp -= LEVEL3_PRACTICE_HP - condition_point;
@@ -1350,13 +1371,13 @@ void Pitcher_practice_decide(void) {
     int Stamina_add;
     if(practice_number == 3) {
         if(Stamina_level == 1) {
-            muscle_point = 8 + sense_point + condition_point;
+            muscle_point = STAMINA1[0] + sense_point + condition_point;
             muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
-            spirit_point = 3 + sense_point + condition_point;
+            spirit_point = STAMINA1[1] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            Stamina_add += 1 + rand() % 6;
+            Stamina_add += STAMINA1[2] + rand() % STAMINA1[3];
             Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Stamina_level_counter++;
@@ -1392,14 +1413,14 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Stamina_level == 2) {
-            muscle_point = 11 + sense_point + condition_point;
+            muscle_point = STAMINA2[0] + sense_point + condition_point;
             muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
-            spirit_point = 5 + sense_point + condition_point;
+            spirit_point = STAMINA2[1] + sense_point + condition_point;
             spirit_point +=
                 (int)(interleave_proportion * interleave_proportion);
             spirit += spirit_point;
-            Stamina_add += 1 + rand() % 6;
+            Stamina_add += STAMINA2[2] + rand() % STAMINA2[3];
             Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Stamina_level_counter++;
@@ -1435,13 +1456,13 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Stamina_level == 3) {
-            muscle_point = 14 + sense_point + condition_point;
+            muscle_point = STAMINA3[0] + sense_point + condition_point;
             muscle_point += (int)(muscle_point * interleave_proportion);
             muscle += muscle_point;
-            spirit_point = 8 + sense_point + condition_point;
+            spirit_point = STAMINA3[1] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            Stamina_add += 1 + rand() % 6;
+            Stamina_add += STAMINA3[2] + rand() % STAMINA3[3];
             Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Hp -= LEVEL3_PRACTICE_HP - condition_point;
@@ -1509,13 +1530,13 @@ void Pitcher_practice_decide(void) {
     //-----[変化球練習関連]------------------------------------------------------
     if(practice_number == 4) {
         if(Evolving_level == 1) {
-            evolving_point = 3 + sense_point + condition_point;
+            evolving_point = EVOLVING1[0] + sense_point + condition_point;
             evolving_point += (int)(evolving_point * interleave_proportion);
             evolving += evolving_point;
-            technique_point = 10 + sense_point + condition_point;
+            technique_point = EVOLVING1[1] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 3 + sense_point + condition_point;
+            spirit_point = EVOLVING1[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Evolving_level_counter++;
@@ -1551,13 +1572,13 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Evolving_level == 2) {
-            evolving_point = 6 + sense_point + condition_point;
+            evolving_point = EVOLVING2[0] + sense_point + condition_point;
             evolving_point += (int)(evolving_point * interleave_proportion);
             evolving += evolving_point;
-            technique_point = 13 + sense_point + condition_point;
+            technique_point = EVOLVING2[1] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 6 + sense_point + condition_point;
+            spirit_point = EVOLVING2[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Evolving_level_counter++;
@@ -1593,13 +1614,13 @@ void Pitcher_practice_decide(void) {
             cout << "\x1b[39m"; //デフォ
         }
         if(Evolving_level == 3) {
-            evolving_point = 10 + sense_point + condition_point;
+            evolving_point = EVOLVING3[0] + sense_point + condition_point;
             evolving_point += (int)(evolving_point * interleave_proportion);
             evolving += evolving_point;
-            technique_point = 17 + sense_point + condition_point;
+            technique_point = EVOLVING3[1] + sense_point + condition_point;
             technique_point += (int)(technique_point * interleave_proportion);
             technique += technique_point;
-            spirit_point = 10 + sense_point + condition_point;
+            spirit_point = EVOLVING3[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Hp -= LEVEL3_PRACTICE_HP - condition_point;
