@@ -14,5 +14,5 @@ if __name__ == "__main__":
         # for _ in range(31):
         #     f.write('1\n' + '\n'*3)  # 練習と結果
         for i in range(31):
-            f.write(str((i % 4) + 1) + '\n' + '\n'*5)
+            f.write(str((i % 4) + 1) + '\n' + '\n' * 10)
         
