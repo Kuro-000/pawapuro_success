@@ -1,0 +1,11 @@
+.env
+.venv
+*.csv
+append_column.py
+a.out
+loop.txt 
+
+clml-tf10/
+cloudml-samples-master/
+google-cloud-sdk/
+.vscode/
