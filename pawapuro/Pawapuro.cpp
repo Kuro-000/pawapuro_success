@@ -24,6 +24,9 @@ First date : 2017/01/10
 ・調子の幅は、絶不調、不調、普通、好調、絶好調の5段階とする
 */
 
+// 天候による練習メニューの変化
+// 季節による練習メニュー
+
 #include "./conio.h"
 #include <algorithm>
 #include <fstream>
@@ -38,7 +41,7 @@ First date : 2017/01/10
 
 #define DAYS 31 // 練習日数
 // Lv.1時の練習メニューで得られるポイント
-#define BALL_POINT 5
+/* #define BALL_POINT 5
 #define CONTROL_POINT 5
 #define STAMINA_POINT 5
 #define EVOLVING_POINT 5
@@ -47,7 +50,7 @@ First date : 2017/01/10
 #define RUN_POINT 5
 #define SHOLDER_POINT 5
 #define PROTECT_POINT 5
-#define CATCHING_POINT 5
+#define CATCHING_POINT 5 */
 
 // クソ面倒ですが各練習を定義
 // 使う分だけ上から追加していきます
@@ -55,30 +58,46 @@ First date : 2017/01/10
 
 // ball練習
 // muscle, technique, spirit
-int BALL1[3] = {10, 4, 2};
+/* int BALL1[3] = {10, 4, 2};
 int BALL2[3] = {13, 8, 4};
-int BALL3[3] = {17, 12, 8};
+int BALL3[3] = {17, 12, 8}; */
+
+int BALL1[3] = {12, 6, 4};
+int BALL2[3] = {15, 10, 6};
+int BALL3[3] = {19, 14, 10};
 
 // contro練習
 // technique, spirit
-int CONTROL1[2] = {10, 6};
+/* int CONTROL1[2] = {10, 6};
 int CONTROL2[2] = {13, 10};
-int CONTROL3[2] = {17, 12};
+int CONTROL3[2] = {17, 12}; */
+
+int CONTROL1[2] = {12, 8};
+int CONTROL2[2] = {15, 12};
+int CONTROL3[2] = {19, 14};
 
 // stamina練習
 // muscle, spirit, stamina, stamina
-int STAMINA1[4] = {8, 3, 1, 6};
+/* int STAMINA1[4] = {8, 3, 1, 6};
 int STAMINA2[4] = {11, 5, 1, 6};
-int STAMINA3[4] = {14, 8, 1, 6};
+int STAMINA3[4] = {14, 8, 1, 6}; */
+
+int STAMINA1[4] = {10, 5, 1, 6};
+int STAMINA2[4] = {13, 7, 1, 6};
+int STAMINA3[4] = {16, 10, 1, 6};
 
 // evolvinれ練習
 // evolving, technique, spirit
-int EVOLVING1[3] = {3, 10, 3};
+/* int EVOLVING1[3] = {3, 10, 3};
 int EVOLVING2[3] = {6, 13, 6};
-int EVOLVING3[3] = {10, 17, 10};
+int EVOLVING3[3] = {10, 17, 10}; */
+
+int EVOLVING1[3] = {5, 12, 5};
+int EVOLVING2[3] = {8, 15, 8};
+int EVOLVING3[3] = {12, 19, 12};
 
 // #define GENIUS_DENOMINATOR 25 // 天才型出現判定の分母
-#define GENIUS_DENOMINATOR 9999999999 // 天才型出現判定の分母
+#define GENIUS_DENOMINATOR 20 // 天才型出現判定の分母
 #define DAIJYOUBU_1 1 // ダイジョーブ博士出現率(rand()%10<DAIJYOUBU_1)
 #define DAIJYOUBU_2 1 // ダイジョーブ博士成功率(rand()%10<DAIJYOUBU_2)
 #define INTERLEAVE_PROPORTION 0.05 // インターリーブ学習の割合、MAXは1.5
@@ -285,6 +304,8 @@ double interleave_proportion = 0;
 int ball_interleave = 0, control_interleave = 0, stamina_interleave = 0,
     evolving_interleave = 0;
 
+int count = 0;
+
 int main() {
     srand((unsigned)time(NULL));
 GAME_START:
@@ -475,8 +496,8 @@ GAME_START:
         Sinker = 0;
         Shoot = 0;
         // 天才型投手初期能力決定
-        // genius = rand() % GENIUS_DENOMINATOR + 1;
-        genius = 2;
+        genius = rand() % GENIUS_DENOMINATOR + 1;
+        // genius = 2;
         if(genius == 1) {
             genius_point = 0.9;
             Ball = 135 + (rand() % 14 + 1);
@@ -675,6 +696,7 @@ GAME_START:
                 cout << "[" << Name << "]" << endl;
                 cout << "疲れてしまった…今日の練習は休んでしまおう…。" << endl;
                 Hp += 70 + condition_point * 10;
+                count++;
                 if(getchar() == '\n') {
                     cout << "休憩を行った。▼";
                 }
@@ -749,9 +771,11 @@ GAME_START:
                 cout << "終わるのだ" << endl;
                 ofstream ofs("result.csv", std::ios::app);
                 ofs << Position << "," << muscle << "," << agile << ","
-                    << technique << "," << evolving << "," << spirit << endl;
+                    << technique << "," << evolving << "," << spirit << ","
+                    << count << endl;
                 cout << Position << "," << muscle << "," << agile << ","
-                     << technique << "," << evolving << "," << spirit << endl;
+                     << technique << "," << evolving << "," << spirit << ","
+                     << count << endl;
                 break;
             }
             sub_days++;
@@ -1076,8 +1100,6 @@ PERSONALITY:
 void Pitcher_practice_decide(void) {
     // デバッグのインターリーブ学習をを表示
     cout << "interleave_% is " << interleave_proportion << endl;
-    // インターリーブ率廃止
-    interleave_proportion = 0;
     //-----[球速練習関連]------------------------------------------------------
     if(practice_number == 1) {
         if(Ball_level == 1) {
@@ -1091,7 +1113,9 @@ void Pitcher_practice_decide(void) {
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Ball_level_counter++;
-            Hp -= LEVEL1_PRACTICE_HP - condition_point;
+            Hp -= LEVEL1_PRACTICE_HP - condition_point +
+                  (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "投げ込みを行なった。▼ ";
             }
@@ -1117,7 +1141,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL1_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL1_PRACTICE_HP - condition_point +
+                            (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1133,7 +1160,9 @@ void Pitcher_practice_decide(void) {
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Ball_level_counter++;
-            Hp -= LEVEL2_PRACTICE_HP - condition_point;
+            Hp -= LEVEL2_PRACTICE_HP - condition_point +
+                  (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "200球投げ込みを行なった。▼ ";
             }
@@ -1159,7 +1188,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL2_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL2_PRACTICE_HP - condition_point +
+                            (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1174,7 +1206,9 @@ void Pitcher_practice_decide(void) {
             spirit_point = BALL3[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            Hp -= LEVEL3_PRACTICE_HP - condition_point;
+            Hp -= LEVEL3_PRACTICE_HP - condition_point +
+                  (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "マッスラー投げ込みを行なった。▼ ";
             }
@@ -1200,7 +1234,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL3_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL3_PRACTICE_HP - condition_point +
+                            (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1246,7 +1283,9 @@ void Pitcher_practice_decide(void) {
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Control_level_counter++;
-            Hp -= LEVEL1_PRACTICE_HP - condition_point;
+            Hp -= LEVEL1_PRACTICE_HP - condition_point +
+                  (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "的当てを行なった。▼ ";
             }
@@ -1266,7 +1305,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL1_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL1_PRACTICE_HP - condition_point +
+                            (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1279,7 +1321,9 @@ void Pitcher_practice_decide(void) {
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Control_level_counter++;
-            Hp -= LEVEL2_PRACTICE_HP - condition_point;
+            Hp -= LEVEL2_PRACTICE_HP - condition_point +
+                  (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "コース投げ込みを行なった。▼ ";
             }
@@ -1299,7 +1343,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL2_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL2_PRACTICE_HP - condition_point +
+                            (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1311,7 +1358,9 @@ void Pitcher_practice_decide(void) {
             spirit_point = CONTROL3[1] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            Hp -= LEVEL3_PRACTICE_HP - condition_point;
+            Hp -= LEVEL3_PRACTICE_HP - condition_point +
+                  (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "コース実践行なった。▼ ";
             }
@@ -1331,7 +1380,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL3_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL3_PRACTICE_HP - condition_point +
+                            (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1381,7 +1433,9 @@ void Pitcher_practice_decide(void) {
             Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Stamina_level_counter++;
-            Hp -= LEVEL1_PRACTICE_HP - condition_point;
+            Hp -= LEVEL1_PRACTICE_HP - condition_point +
+                  (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "長距離走を行なった。▼ ";
             }
@@ -1407,7 +1461,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL1_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL1_PRACTICE_HP - condition_point +
+                            (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1424,7 +1481,9 @@ void Pitcher_practice_decide(void) {
             Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
             Stamina_level_counter++;
-            Hp -= LEVEL2_PRACTICE_HP - condition_point;
+            Hp -= LEVEL2_PRACTICE_HP - condition_point +
+                  (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "マラソンを行なった。▼ ";
             }
@@ -1450,7 +1509,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL2_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL2_PRACTICE_HP - condition_point +
+                            (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1465,7 +1527,9 @@ void Pitcher_practice_decide(void) {
             Stamina_add += STAMINA3[2] + rand() % STAMINA3[3];
             Stamina_add += (int)(Stamina_add * interleave_proportion);
             Stamina += Stamina_add;
-            Hp -= LEVEL3_PRACTICE_HP - condition_point;
+            Hp -= LEVEL3_PRACTICE_HP - condition_point +
+                  (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "タイヤ引きを行なった。▼ ";
             }
@@ -1491,7 +1555,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL3_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL3_PRACTICE_HP - condition_point +
+                            (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1540,7 +1607,9 @@ void Pitcher_practice_decide(void) {
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Evolving_level_counter++;
-            Hp -= LEVEL1_PRACTICE_HP - condition_point;
+            Hp -= LEVEL1_PRACTICE_HP - condition_point +
+                  (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "変化球本音読を行なった。▼ ";
             }
@@ -1566,7 +1635,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL1_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL1_PRACTICE_HP - condition_point +
+                            (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1582,7 +1654,9 @@ void Pitcher_practice_decide(void) {
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
             Evolving_level_counter++;
-            Hp -= LEVEL2_PRACTICE_HP - condition_point;
+            Hp -= LEVEL2_PRACTICE_HP - condition_point +
+                  (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "変化球投げ込みを行なった。▼ ";
             }
@@ -1608,7 +1682,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL2_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL2_PRACTICE_HP - condition_point +
+                            (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1623,7 +1700,9 @@ void Pitcher_practice_decide(void) {
             spirit_point = EVOLVING3[2] + sense_point + condition_point;
             spirit_point += (int)(spirit_point * interleave_proportion);
             spirit += spirit_point;
-            Hp -= LEVEL3_PRACTICE_HP - condition_point;
+            Hp -= LEVEL3_PRACTICE_HP - condition_point +
+                  (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                        interleave_proportion);
             if(getchar() == '\n') {
                 cout << "変化球実践を行なった。▼ ";
             }
@@ -1649,7 +1728,10 @@ void Pitcher_practice_decide(void) {
                 cout << "\x1b[33m"
                      << "体力"
                      << "\x1b[34m"
-                     << "が" << LEVEL3_PRACTICE_HP - condition_point
+                     << "が"
+                     << LEVEL3_PRACTICE_HP - condition_point +
+                            (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                                  interleave_proportion)
                      << "下がった。▼";
             }
             cout << "\x1b[39m"; //デフォ
@@ -1688,6 +1770,7 @@ void Pitcher_practice_decide(void) {
     //-----[休憩]-----------------------------------------
     if(practice_number == 5) {
         Hp += 70 + condition_point * 10;
+        count++;
         if(getchar() == '\n') {
             cout << "休憩を行った。▼";
         }
@@ -1700,9 +1783,21 @@ void Pitcher_practice_decide(void) {
     }
 
     cout << endl;
-    cout << "LEVEL1 減少HP is" << LEVEL1_PRACTICE_HP - condition_point << endl;
-    cout << "LEVEL2 減少HP is" << LEVEL2_PRACTICE_HP - condition_point << endl;
-    cout << "LEVEL3 減少HP is" << LEVEL3_PRACTICE_HP - condition_point << endl;
+    cout << "LEVEL1 減少HP is"
+         << LEVEL1_PRACTICE_HP - condition_point +
+                (int)((LEVEL1_PRACTICE_HP - condition_point) *
+                      interleave_proportion)
+         << endl;
+    cout << "LEVEL2 減少HP is"
+         << LEVEL2_PRACTICE_HP - condition_point +
+                (int)((LEVEL2_PRACTICE_HP - condition_point) *
+                      interleave_proportion)
+         << endl;
+    cout << "LEVEL3 減少HP is"
+         << LEVEL3_PRACTICE_HP - condition_point +
+                (int)((LEVEL3_PRACTICE_HP - condition_point) *
+                      interleave_proportion)
+         << endl;
     cout << "ball_interleave is " << ball_interleave << endl;
     cout << "control_interleave is " << control_interleave << endl;
     cout << "stamina_interleave is " << stamina_interleave << endl;
