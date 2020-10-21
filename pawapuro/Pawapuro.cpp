@@ -27,7 +27,7 @@ First date : 2017/01/10
 // 天候による練習メニューの変化
 // 季節による練習メニュー
 
-#include "./conio.h"
+#include "./character.cpp"
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
@@ -36,7 +36,6 @@ First date : 2017/01/10
 #include <string>
 #include <time.h>
 #include <vector>
-// #include "character.cc"
 // #include "practice.cpp"
 
 #define DAYS 31 // 練習日数
